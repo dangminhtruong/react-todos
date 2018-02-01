@@ -25,6 +25,11 @@ class App extends Component {
         status : 2
       }
     ],
+    job_done : [],
+    job_action : [],
+    showlAll : true,
+    showDone : false,
+    showAction : false,
     alert : null
   }
 /*---------------------------------------------------*/ 
@@ -91,39 +96,87 @@ class App extends Component {
 /*---------------------------------------------------*/ 
 fillByDone = () => {
   this.setState({
-    jobs : _.filter(this.state.jobs, { status : 2 }),
+    job_done : _.filter(this.state.jobs, { status : 2 }),
+    showDone : true,
+    showlAll : false,
+    showAction : false
   });
 }
 fillByAction = () => {
   this.setState({
-    jobs : _.filter(this.state.jobs, { status : 1 }),
+    job_action : _.filter(this.state.jobs, { status : 1 }),
+    showDone : false,
+    showlAll : false,
+    showAction : true
   });
 }
 
 fillByAll = () => {
   this.setState({
-    jobs : this.state.jobs,
+    showDone : false,
+    showlAll : true,
+    showAction : false
   });
 }
 /*---------------------------------------------------*/ 
   render() {
     let jobs = null;
-    jobs = (
-      <div>
-      { 
-        this.state.jobs.map((item, index) => {
-        return(
-                <Todo 
-                name= { item.name } 
-                key={index}
-                setChecked = { this.setChecked(item.status) }
-                remove = { this.removeItem.bind(this, index) }
-                click = { this.changeStatusHandlder.bind(this, index) } />
-            )
-          })
-      }
-      </div>
-  )
+    let jobDone = null;
+    let jobAction = null;
+    if(this.state.showlAll == true && this.state.showAction == false && this.state.showDone == false){
+        jobs = (
+          <div>
+          { 
+            this.state.jobs.map((item, index) => {
+            return(
+                    <Todo 
+                    name= { item.name } 
+                    key={index}
+                    setChecked = { this.setChecked(item.status) }
+                    remove = { this.removeItem.bind(this, index) }
+                    click = { this.changeStatusHandlder.bind(this, index) } />
+                )
+              })
+          }
+          </div>
+      )
+    }else if(this.state.showlAll == false && this.state.showAction == false && this.state.showDone == true){
+      jobs = (
+        <div>
+        { 
+          this.state.job_done.map((item, index) => {
+          return(
+                  <Todo 
+                  name= { item.name } 
+                  key={index}
+                  setChecked = { this.setChecked(item.status) }
+                  remove = { this.removeItem.bind(this, index) }
+                  click = { this.changeStatusHandlder.bind(this, index) } />
+              )
+            })
+        }
+        </div>
+    )
+    }else{
+      jobs = (
+        <div>
+        { 
+          this.state.job_action.map((item, index) => {
+          return(
+                  <Todo 
+                  name= { item.name } 
+                  key={index}
+                  setChecked = { this.setChecked(item.status) }
+                  remove = { this.removeItem.bind(this, index) }
+                  click = { this.changeStatusHandlder.bind(this, index) } />
+              )
+            })
+        }
+        </div>
+      )
+    }
+
+
     return (
         <div className="container-fluid">
             <div className="col-md-12 col-lg-12">
@@ -139,7 +192,6 @@ fillByAll = () => {
               <div className="col-md-12 col-lg-12">
                   { jobs }  
               </div>
-
               <div className="group col-md-12 col-lg-12">      
                 <div className="col-md-6 col-lg-6 col-md-push-3 col-lg-push-3">
                 <form>
